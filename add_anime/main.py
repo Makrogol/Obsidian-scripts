@@ -66,11 +66,13 @@ def main():
     options = Options()
     options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
+    print('Successfully created chrome webdriver')
     driver.get(args.link)
     anime_element.title = driver.find_element(By.XPATH, TITLE_XPATH).text
     view_list_button = driver.find_element(By.XPATH, VIEW_LIST_BUTTON_XPATH)
     driver.execute_script("arguments[0].click();", view_list_button)
     view_list_bordered = driver.find_element(By.XPATH, VIEW_LIST_BORDERED_XPATH)
+    print('Successfully find all elements on the page')
     for el in view_list_bordered.find_elements(By.TAG_NAME, 'a'):
         anime_season = AnimeSeason()
         anime_season.title = el.text
