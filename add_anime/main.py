@@ -1,4 +1,5 @@
 import argparse
+import re
 import sys
 
 from pathlib import Path
@@ -22,6 +23,13 @@ VIEW_LIST_BORDERED_XPATH = "//div[contains(@class, 'view-list bordered')]"
 
 YUMMYANIME_CATALOG_ITEM_LINK = 'https://old.yummyani.me/catalog/item/'
 
+EXCLUDED_SYMBOLS_IN_FILE_NAMES = ['*', '\"', '\\', '/', '<', '>', ':', '|', '?']
+EXCLUDED_SYMBOLS_REG_EXP = r'[*\\"\/\<\>:\|?]'
+
+
+def get_validated_file_name(title: str) -> str:
+    return re.sub(EXCLUDED_SYMBOLS_REG_EXP, '', title)
+
 
 def create_file(file_name: str) -> Path:
     anime_file = ANIME_PATH / f'{file_name}.md'
@@ -39,7 +47,8 @@ class AnimeElement:
     seasons: list[AnimeSeason] = []
 
     def write_to_file(self):
-        anime_file = create_file(self.title)
+        anime_file = create_file(get_validated_file_name(self.title))
+        print(f'File path = {anime_file}')
         data = DATA
 
         for idx, season in enumerate(self.seasons, start=1):
